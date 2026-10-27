@@ -1,0 +1,10 @@
+@model IEnumerable<WebLapTop.Models.Entities.Category>
+
+@foreach (var category in Model)
+{
+    <li>
+        <a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-category="@category.Name">
+            <i class="bi bi-laptop"></i> @category.Name
+        </a>
+    </li>
+}

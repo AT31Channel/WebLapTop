@@ -1,0 +1,280 @@
+@model IEnumerable<WebLapTop.Models.Entities.Category>
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<style>
+    .card {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .table {
+        color: #333;
+        margin-bottom: 0;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        color: #333;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table td {
+        vertical-align: middle;
+        color: #333;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(33, 150, 243, 0.05);
+    }
+
+    .badge {
+        padding: 0.5em 0.8em;
+        font-weight: 500;
+        font-size: 0.85em;
+    }
+
+    .badge.bg-success {
+        background-color: #4caf50 !important;
+        color: white;
+    }
+
+    .badge.bg-secondary {
+        background-color: #6c757d !important;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #1976d2;
+        border-color: #1976d2;
+        color: white;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+        background-color: #1565c0;
+        border-color: #1565c0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-group {
+        background: white;
+        border-radius: 4px;
+        padding: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-group .btn {
+        padding: 0.4rem 0.8rem;
+        margin: 0 2px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .btn-outline-primary {
+        color: #1976d2;
+        border-color: #1976d2;
+        background-color: white;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #1976d2;
+        border-color: #1976d2;
+        color: white;
+    }
+
+    .btn-outline-info {
+        color: #0097a7;
+        border-color: #0097a7;
+        background-color: white;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #0097a7;
+        border-color: #0097a7;
+        color: white;
+    }
+
+    .btn i {
+        font-size: 1rem;
+        vertical-align: middle;
+    }
+
+    .btn-group .btn i {
+        margin-right: 0;
+    }
+
+    .action-buttons {
+        white-space: nowrap;
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-buttons .btn {
+        min-width: 90px;
+        justify-content: center;
+        align-items: center;
+        display: inline-flex;
+        padding: 0.4rem 0.8rem;
+        background-color: white;
+    }
+
+    .action-buttons .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-buttons .btn-outline-primary {
+        border-color: #1976d2;
+        color: #1976d2;
+    }
+
+    .action-buttons .btn-outline-primary:hover {
+        background-color: #1976d2;
+        color: white;
+    }
+
+    .action-buttons .btn-outline-info {
+        border-color: #0097a7;
+        color: #0097a7;
+    }
+
+    .action-buttons .btn-outline-info:hover {
+        background-color: #0097a7;
+        color: white;
+    }
+
+    .action-button-text {
+        display: inline-block;
+        margin-left: 4px;
+        font-size: 0.9rem;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    .alert-success {
+        background-color: #e8f5e9;
+        border-color: #c8e6c9;
+        color: #2e7d32;
+    }
+
+    /* Thêm style cho nút lưu */
+    .btn-save {
+        background-color: #2196f3;
+        border-color: #2196f3;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-save:hover {
+        background-color: #1976d2;
+        border-color: #1976d2;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-dark">Quản lý danh mục</h2>
+        <a asp-action="CreateCategory" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Thêm danh mục mới
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên danh mục</th>
+                            <th>Mô tả</th>
+                            <th>Hiển thị</th>
+                            <th>Thứ tự</th>
+                            <th>Số sản phẩm</th>
+                            <th width="150">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>
+                                    @if (string.IsNullOrEmpty(item.Description))
+                                    {
+                                        <span class="text-muted">Không có mô tả</span>
+                                    }
+                                    else
+                                    {
+                                        @if (item.Description.Length > 50)
+                                        {
+                                            @(item.Description.Substring(0, 50) + "...")
+                                        }
+                                        else
+                                        {
+                                            @item.Description
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsVisible)
+                                    {
+                                        <span class="badge bg-success">Hiển thị</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Ẩn</span>
+                                    }
+                                </td>
+                                <td>@item.DisplayOrder</td>
+                                <td>@item.Products.Count</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-action="EditCategory" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm" title="Chỉnh sửa danh mục">
+                                            <i class="bi bi-pencil"></i>
+                                            <span class="action-button-text">Sửa</span>
+                                        </a>
+                                        <a asp-area="" asp-controller="Home" asp-action="Index" asp-route-category="@item.Name" target="_blank" class="btn btn-outline-info btn-sm" title="Xem hiển thị trên trang chủ">
+                                            <i class="bi bi-eye"></i>
+                                            <span class="action-button-text">Xem</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

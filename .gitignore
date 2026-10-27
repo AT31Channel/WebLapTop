@@ -1,0 +1,47 @@
+## .NET / ASP.NET Core
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## Publish
+publish/
+**/publish/
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Logs
+*.log
+logs/
+
+## OS
+.DS_Store
+Thumbs.db
+
+## IDE
+.idea/
+*.swp
+
+## Sensitive config - KHÔNG đẩy lên GitHub
+**/appsettings.Development.json
+**/appsettings.Production.json
+
+## launchSettings chứa thông tin local
+**/Properties/launchSettings.json
+
+## Node
+node_modules/
+npm-debug.log*
+
+## Entity Framework
+*.mdf
+*.ldf

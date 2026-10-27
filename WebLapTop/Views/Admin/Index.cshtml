@@ -1,0 +1,387 @@
+@using WebLapTop.Models.Entities
+@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Tổng quan hệ thống";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .dashboard-card {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(33, 150, 243, 0.05), transparent);
+        z-index: 0;
+    }
+
+    .card-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        display: inline-block;
+    }
+
+    .card-title {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .card-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .card-trend {
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .trend-up {
+        color: #4caf50;
+    }
+
+    .trend-down {
+        color: #f44336;
+    }
+
+    .orders-pending {
+        border-color: #ff9800;
+    }
+
+    .orders-pending .card-icon {
+        color: #ff9800;
+    }
+
+    .products-total {
+        border-color: #2196f3;
+    }
+
+    .products-total .card-icon {
+        color: #2196f3;
+    }
+
+    .customers-total {
+        border-color: #9c27b0;
+    }
+
+    .customers-total .card-icon {
+        color: #9c27b0;
+    }
+
+    .revenue-total {
+        border-color: #4caf50;
+    }
+
+    .revenue-total .card-icon {
+        color: #4caf50;
+    }
+
+    .chart-card {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-title {
+        color: #333;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notification-card {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-title {
+        color: #333;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .notification-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .notification-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        background: rgba(33, 150, 243, 0.1);
+    }
+
+    .notification-content {
+        flex: 1;
+    }
+
+    .notification-message {
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .notification-time {
+        color: #666;
+        font-size: 0.8rem;
+    }
+
+    .progress-bar-container {
+        height: 6px;
+        background: #f5f5f5;
+        border-radius: 3px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(45deg, #2196f3, #64b5f6);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+
+    /* Thêm style cho các nút */
+    .btn-outline-primary {
+        color: #2196f3;
+        border-color: #2196f3;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #2196f3;
+        color: white;
+    }
+
+    .btn-outline-primary.active {
+        background-color: #2196f3;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-xl-3 col-sm-6">
+            <div class="dashboard-card orders-pending">
+                <div class="card-content">
+                    <i class="fas fa-shopping-cart card-icon"></i>
+                    <div class="card-title">Đơn hàng chờ xử lý</div>
+                    <div class="card-value">@ViewBag.PendingOrders</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: @(ViewBag.PendingOrdersPercent)%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="dashboard-card products-total">
+                <div class="card-content">
+                    <i class="fas fa-laptop card-icon"></i>
+                    <div class="card-title">Tổng sản phẩm</div>
+                    <div class="card-value">@ViewBag.TotalProducts</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: @(ViewBag.ProductsProgress)%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="dashboard-card customers-total">
+                <div class="card-content">
+                    <i class="fas fa-users card-icon"></i>
+                    <div class="card-title">Khách hàng</div>
+                    <div class="card-value">@ViewBag.TotalUsers</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: @(ViewBag.CustomersProgress)%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="dashboard-card revenue-total">
+                <div class="card-content">
+                    <i class="fas fa-dollar-sign card-icon"></i>
+                    <div class="card-title">Doanh thu tháng</div>
+                    <div class="card-value">@String.Format("{0:N0}", ViewBag.MonthlyRevenue)đ</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: @(ViewBag.RevenueProgress)%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span>Phân tích doanh thu</span>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-primary active">30 ngày qua</button>
+                        <button class="btn btn-sm btn-outline-primary">3 tháng</button>
+                        <button class="btn btn-sm btn-outline-primary">6 tháng</button>
+                    </div>
+                </div>
+                <div id="revenueChart" style="height: 300px;"></div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="notification-card">
+                <div class="notification-title">
+                    <i class="fas fa-bell me-2"></i>Thông báo mới
+                </div>
+                <ul class="notification-list">
+                    @if (ViewBag.RecentNotifications != null && ((List<AdminNotification>)ViewBag.RecentNotifications).Count > 0)
+                    {
+                        @foreach (AdminNotification notification in ViewBag.RecentNotifications)
+                        {
+                            <li class="notification-item">
+                                <div class="notification-icon" style="background: rgba(33, 150, 243, 0.1);">
+                                    <i class="fas fa-info-circle" style="color: #2196f3;"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-message">@notification.Message</div>
+                                    <div class="notification-time">@notification.CreateDate.ToString("HH:mm dd/MM/yyyy")</div>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="notification-item">
+                            <div class="notification-content">
+                                <div class="notification-message text-muted">Không có thông báo mới</div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        // Khởi tạo biểu đồ doanh thu
+        var options = {
+            series: [{
+                name: 'Doanh thu',
+                data: @Html.Raw(Json.Serialize(ViewBag.RevenueData ?? new[] { 0 }))
+            }],
+            chart: {
+                type: 'area',
+                height: 300,
+                toolbar: {
+                    show: false
+                },
+                background: 'transparent'
+            },
+            colors: ['#2196f3'],
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.3,
+                    stops: [0, 90, 100]
+                }
+            },
+            xaxis: {
+                categories: @Html.Raw(Json.Serialize(ViewBag.RevenueDates ?? new[] { "" })),
+                labels: {
+                    style: {
+                        colors: '#90caf9'
+                    }
+                },
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#90caf9'
+                    },
+                    formatter: function (value) {
+                        return value.toLocaleString('vi-VN') + 'đ';
+                    }
+                }
+            },
+            grid: {
+                borderColor: 'rgba(33, 150, 243, 0.1)',
+                strokeDashArray: 5
+            },
+            tooltip: {
+                theme: 'dark'
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#revenueChart"), options);
+        chart.render();
+    </script>
+}

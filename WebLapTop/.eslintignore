@@ -1,0 +1,14 @@
+# Bỏ qua các thư viện
+**/lib/**
+**/dist/**
+**/*.min.js
+**/bootstrap*.js
+**/jquery*.js
+**/vue*.js
+**/react*.js
+**/angular*.js
+
+# Bỏ qua các file tự động sinh
+**/*.generated.js
+**/*.bundle.js
+**/node_modules/** 

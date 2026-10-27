@@ -1,0 +1,271 @@
+@model WebLapTop.Models.Entities.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng #" + Model.Id;
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-cyber mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-box me-2"></i>Sản phẩm đã đặt
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-center">Số lượng</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@item.Product.ImageUrl" alt="@item.Product.Name"
+                                                     class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: contain;" />
+                                                <div>
+                                                    <div class="fw-500">@item.Product.Name</div>
+                                                    <small class="text-muted">@item.Product.Category?.Name</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">@item.UnitPrice.ToString("#,##0") ₫</td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">@((item.UnitPrice * item.Quantity).ToString("#,##0")) ₫</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
+                                    <td class="text-end fw-bold">@Model.TotalAmount.ToString("#,##0") ₫</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Status.ToLower() == "delivered")
+            {
+                <div class="card card-cyber">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-star me-2"></i>Đánh giá sản phẩm
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var item in Model.OrderDetails)
+                        {
+                            if (!item.IsReviewed)
+                            {
+                                <div class="review-item mb-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="@item.Product.ImageUrl" alt="@item.Product.Name"
+                                             class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: contain;" />
+                                        <div>
+                                            <h5 class="mb-0">@item.Product.Name</h5>
+                                            <small class="text-muted">@item.Product.Category?.Name</small>
+                                        </div>
+                                    </div>
+                                    <form class="review-form" onsubmit="submitReview(event, @item.Id)">
+                                        <div class="rating mb-3">
+                                            @for (int i = 5; i >= 1; i--)
+                                            {
+                                                <input type="radio" name="rating" value="@i" id="rating-@(item.Id)-@i" required />
+                                                <label for="rating-@(item.Id)-@i">☆</label>
+                                            }
+                                        </div>
+                                        <div class="mb-3">
+                                            <textarea class="form-control" name="comment" rows="3" 
+                                                      placeholder="Nhập đánh giá của bạn về sản phẩm..." required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-cyber">
+                                            <i class="fas fa-paper-plane me-2"></i>Gửi đánh giá
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-cyber mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Thông tin đơn hàng
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Trạng thái đơn hàng</label>
+                        @{
+                            var (statusText, statusClass) = Model.Status.ToLower() switch
+                            {
+                                "pending" => ("Chờ xử lý", "warning"),
+                                "confirmed" => ("Đã xác nhận", "info"),
+                                "shipping" => ("Đang giao hàng", "primary"),
+                                "delivered" => ("Đã giao hàng", "success"),
+                                "cancelled" => ("Đã hủy", "danger"),
+                                _ => ("Không xác định", "secondary")
+                            };
+                        }
+                        <div>
+                            <span class="badge bg-@statusClass">@statusText</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Ngày đặt hàng</label>
+                        <div>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Phương thức thanh toán</label>
+                        <div>@(Model.PaymentMethod == "COD" ? "Thanh toán khi nhận hàng" : Model.PaymentMethod)</div>
+                    </div>
+
+                    <hr class="border-secondary" />
+
+                    <div class="mb-3">
+                        <label class="text-muted">Người nhận</label>
+                        <div>@Model.FullName</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Email</label>
+                        <div>@Model.Email</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Số điện thoại</label>
+                        <div>@Model.PhoneNumber</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Địa chỉ giao hàng</label>
+                        <div>@Model.ShippingAddress</div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Note))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Ghi chú</label>
+                            <div>@Model.Note</div>
+                        </div>
+                    }
+
+                    @if (Model.Status.ToLower() == "pending")
+                    {
+                        <hr class="border-secondary" />
+                        <button type="button" class="btn btn-danger w-100" onclick="cancelOrder(@Model.Id)">
+                            <i class="fas fa-times me-2"></i>Hủy đơn hàng
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+    .rating input {
+        display: none;
+    }
+
+    .rating label {
+        cursor: pointer;
+        font-size: 30px;
+        color: #ddd;
+        margin: 0 2px;
+    }
+
+    .rating input:checked ~ label,
+    .rating label:hover,
+    .rating label:hover ~ label {
+        color: #ffc107;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function cancelOrder(orderId) {
+            Swal.fire({
+                title: 'Xác nhận hủy đơn',
+                text: 'Bạn có chắc chắn muốn hủy đơn hàng này?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hủy đơn',
+                cancelButtonText: 'Đóng',
+                confirmButtonColor: '#dc3545'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('/Order/Cancel/' + orderId, function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Thành công',
+                                text: 'Đã hủy đơn hàng thành công',
+                                icon: 'success'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Lỗi',
+                                text: response.message || 'Không thể hủy đơn hàng',
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function submitReview(event, orderDetailId) {
+            event.preventDefault();
+            const form = event.target;
+            const rating = form.querySelector('input[name="rating"]:checked').value;
+            const comment = form.querySelector('textarea[name="comment"]').value;
+
+            $.post('/Order/Review', {
+                orderDetailId: orderDetailId,
+                rating: rating,
+                comment: comment
+            }, function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Thành công',
+                        text: 'Cảm ơn bạn đã đánh giá sản phẩm',
+                        icon: 'success'
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Lỗi',
+                        text: response.message || 'Không thể gửi đánh giá',
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    </script>
+} 

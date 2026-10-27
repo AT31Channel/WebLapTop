@@ -1,0 +1,96 @@
+@model WebLapTop.Models.Entities.CustomerNotification
+@{
+    ViewData["Title"] = "Chi tiết thông báo";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Chi tiết thông báo</h4>
+                        <a href="@Url.Action("Index", "Notification")" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model == null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            Không tìm thấy thông báo này.
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="@Url.Action("Index", "Notification")" class="btn btn-primary">
+                                Quay lại danh sách thông báo
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="notification-details">
+                            <div class="notification-header mb-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="notification-title mb-0">@Model.Title</h3>
+                                    <span class="notification-date text-muted">
+                                        @Model.CreateDate.ToString("dd/MM/yyyy HH:mm")
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge @(Model.Type == "Order" ? "bg-primary" : "bg-info")">
+                                        @if (Model.Type == "Order")
+                                        {
+                                            <i class="bi bi-box-seam me-1"></i>
+                                            <text>Đơn hàng</text>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            <text>Thông tin</text>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="notification-content">
+                                <div class="card mb-4">
+                                    <div class="card-body bg-light">
+                                        <div class="notification-message">@Html.Raw(Model.Message)</div>
+                                    </div>
+                                </div>
+
+                                @if (Model.Type == "Order" && Model.OrderId.HasValue)
+                                {
+                                    <div class="mt-4">
+                                        <a href="@Url.Action("OrderDetails", "Cart", new { id = Model.OrderId })" class="btn btn-primary">
+                                            <i class="bi bi-box-seam me-1"></i>Xem chi tiết đơn hàng
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .notification-title {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .notification-message {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #444;
+    }
+    
+    .notification-content {
+        min-height: 200px;
+    }
+</style> 

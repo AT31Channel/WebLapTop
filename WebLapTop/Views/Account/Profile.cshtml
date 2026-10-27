@@ -1,0 +1,54 @@
+@model WebLapTop.Models.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Thông tin tài khoản";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-light border-cyber">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4 text-gradient">@ViewData["Title"]</h2>
+
+                    @if (TempData["StatusMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["StatusMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Profile" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="form-floating mb-3">
+                            <input asp-for="Email" class="form-control bg-dark text-light" readonly />
+                            <label asp-for="Email" class="text-light"></label>
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            <input asp-for="HoTen" class="form-control bg-dark text-light" placeholder="Họ tên" />
+                            <label asp-for="HoTen" class="text-light"></label>
+                            <span asp-validation-for="HoTen" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-floating mb-4">
+                            <input asp-for="PhoneNumber" class="form-control bg-dark text-light" placeholder="Số điện thoại" />
+                            <label asp-for="PhoneNumber" class="text-light"></label>
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-cyber btn-lg">Cập nhật thông tin</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

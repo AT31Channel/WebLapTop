@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>@ViewData["Title"] - LapTop NPD</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebLapTop.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyber-blue: #58a6ff;
+            --cyber-pink: #ff3366;
+            --cyber-green: #3fb950;
+            --cyber-yellow: #f7d747;
+            --cyber-red: #f85149;
+            --cyber-gray: #8b949e;
+            --cyber-bg: #0d1117;
+            --cyber-bg-light: #161b22;
+            --cyber-bg-dark: #010409;
+            --cyber-border: #30363d;
+        }
+
+        body {
+            background-color: var(--cyber-bg);
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .container, .container-fluid {
+            background-color: var(--cyber-bg);
+            color: #ffffff;
+        }
+
+        .navbar {
+            background-color: var(--cyber-bg-dark) !important;
+            border-bottom: 1px solid var(--cyber-border);
+        }
+
+        .navbar-brand {
+            color: var(--cyber-blue) !important;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+        }
+
+        .nav-link:hover {
+            color: var(--cyber-blue) !important;
+        }
+
+        .dropdown-menu {
+            background-color: var(--cyber-bg-light);
+            border: 1px solid var(--cyber-border);
+        }
+
+        .dropdown-item {
+            color: #ffffff;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--cyber-bg);
+            color: var(--cyber-blue);
+        }
+
+        .footer {
+            background-color: var(--cyber-bg-dark);
+            border-top: 1px solid var(--cyber-border);
+            color: var(--cyber-gray);
+        }
+
+        /* Override Bootstrap dark theme */
+        .bg-dark {
+            background-color: var(--cyber-bg-dark) !important;
+        }
+
+        .text-dark {
+            color: #ffffff !important;
+        }
+
+        /* Form controls */
+        .form-control {
+            background-color: var(--cyber-bg-light);
+            border-color: var(--cyber-border);
+            color: #ffffff;
+        }
+
+        .form-control:focus {
+            background-color: var(--cyber-bg);
+            border-color: var(--cyber-blue);
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(88, 166, 255, 0.25);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--cyber-blue);
+            border-color: var(--cyber-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #4187d6;
+            border-color: #4187d6;
+        }
+
+        .btn-success {
+            background-color: var(--cyber-green);
+            border-color: var(--cyber-green);
+        }
+
+        .btn-success:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+
+        .btn-danger {
+            background-color: var(--cyber-red);
+            border-color: var(--cyber-red);
+        }
+
+        .btn-danger:hover {
+            background-color: #da3633;
+            border-color: #da3633;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--cyber-bg-light);
+            border: 1px solid var(--cyber-border);
+        }
+
+        .card-header {
+            background-color: var(--cyber-bg);
+            border-bottom: 1px solid var(--cyber-border);
+        }
+
+        .card-footer {
+            background-color: var(--cyber-bg);
+            border-top: 1px solid var(--cyber-border);
+        }
+
+        /* Tables */
+        .table {
+            color: #ffffff;
+        }
+
+        .table th {
+            border-color: var(--cyber-border);
+        }
+
+        .table td {
+            border-color: var(--cyber-border);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: var(--cyber-bg);
+        }
+
+        /* Alerts */
+        .alert-success {
+            background-color: rgba(46, 160, 67, 0.15);
+            border-color: rgba(46, 160, 67, 0.4);
+            color: var(--cyber-green);
+        }
+
+        .alert-danger {
+            background-color: rgba(248, 81, 73, 0.15);
+            border-color: rgba(248, 81, 73, 0.4);
+            color: var(--cyber-red);
+        }
+
+        .alert-warning {
+            background-color: rgba(247, 215, 71, 0.15);
+            border-color: rgba(247, 215, 71, 0.4);
+            color: var(--cyber-yellow);
+        }
+
+        .alert-info {
+            background-color: rgba(88, 166, 255, 0.15);
+            border-color: rgba(88, 166, 255, 0.4);
+            color: var(--cyber-blue);
+        }
+
+        /* Badges */
+        .badge {
+            font-weight: 500;
+        }
+
+        .badge-primary {
+            background-color: var(--cyber-blue);
+        }
+
+        .badge-success {
+            background-color: var(--cyber-green);
+        }
+
+        .badge-danger {
+            background-color: var(--cyber-red);
+        }
+
+        .badge-warning {
+            background-color: var(--cyber-yellow);
+            color: var(--cyber-bg);
+        }
+
+        /* Links */
+        a {
+            color: var(--cyber-blue);
+        }
+
+        a:hover {
+            color: #4187d6;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--cyber-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyber-border);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--cyber-gray);
+        }
+    </style>
+</head>
+<body class="tech-theme">
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-laptop me-2"></i>LapTop NPD
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Contact">
+                                <i class="fas fa-envelope me-1"></i>Liên hệ
+                            </a>
+                        </li>
+                    </ul>
+                    <form class="d-flex mx-auto" style="max-width: 500px;" asp-controller="Home" asp-action="Index" method="get">
+                        <div class="input-group">
+                            <input class="form-control search-input" type="search" name="search" placeholder="Tìm kiếm sản phẩm...">
+                            <button class="btn btn-cyber" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link position-relative" asp-controller="Cart" asp-action="Index">
+                                    <i class="fas fa-shopping-cart me-1"></i>
+                                    @{
+                                        var cartCount = 0;
+                                        if (ViewBag.CartCount != null)
+                                        {
+                                            cartCount = ViewBag.CartCount;
+                                        }
+                                    }
+                                    @if (cartCount > 0)
+                                    {
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            @cartCount
+                                            <span class="visually-hidden">sản phẩm trong giỏ</span>
+                                        </span>
+                                    }
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    <span>@User.Identity.Name</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end neon-border">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Profile">
+                                            <i class="fas fa-user-cog me-2"></i>Tài khoản
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Cart" asp-action="OrderHistory">
+                                            <i class="fas fa-history me-2"></i>Lịch sử đơn hàng
+                                        </a>
+                                    </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Admin" asp-action="Index">
+                                                <i class="fas fa-cog me-1"></i>Quản trị
+                                            </a>
+                                        </li>
+                                    }
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">
+                                    <i class="fas fa-user-plus me-1"></i>Đăng ký
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5 class="mb-3" style="color: var(--cyber-blue);">LapTop NPD</h5>
+                    <p>Chất lượng tạo nên thương hiệu</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-light"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5 class="mb-3" style="color: var(--cyber-blue);">Liên kết nhanh</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="@Url.Action("About", "Home")" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Giới thiệu</a></li>
+                        <li class="mb-2"><a href="@Url.Action("Contact", "Home")" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Liên hệ</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Chính sách bảo hành</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5 class="mb-3" style="color: var(--cyber-blue);">Thông tin liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>123 Đường ABC, Thành phố XYZ</li>
+                        <li class="mb-2"><i class="fas fa-phone-alt me-2"></i>0123 456 789</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2"></i>info@laptopnpd.com</li>
+                        <li class="mb-2"><i class="fas fa-clock me-2"></i>8:00 - 22:00, Thứ 2 - Chủ nhật</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary" />
+            <div class="text-center">
+                <p class="mb-0">&copy; @DateTime.Now.Year - LapTop NPD - Bản quyền thuộc về NPD Group</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        // Thêm tham số ngẫu nhiên vào các hình ảnh sản phẩm để tránh cache
+        document.addEventListener('DOMContentLoaded', function() {
+            const productImages = document.querySelectorAll('.product-img, .img-fluid');
+            const timestamp = new Date().getTime();
+            
+            productImages.forEach(img => {
+                const currentSrc = img.getAttribute('src');
+                if(currentSrc && !currentSrc.includes('?v=')) {
+                    img.setAttribute('src', currentSrc + '?v=' + timestamp);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+@model WebLapTop.Models.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container-fluid py-4">
+    <h2 class="mb-4" style="color: var(--cyber-blue);">
+        <i class="fas fa-credit-card me-2"></i>Thanh toán đơn hàng
+    </h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-cyber mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Thông tin giao hàng</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Checkout" method="post" id="checkoutForm" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 p-3 bg-light rounded" role="alert"></div>
+
+                        <div class="form-group mb-4">
+                            <label for="FullName" class="form-label required">Họ tên</label>
+                            <input asp-for="FullName" class="form-control" id="FullName" required />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="Email" class="form-label required">Email</label>
+                            <input asp-for="Email" class="form-control" id="Email" required type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="PhoneNumber" class="form-label required">Số điện thoại</label>
+                            <input asp-for="PhoneNumber" class="form-control" id="PhoneNumber" required pattern="[0-9]{10}" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="ShippingAddress" class="form-label required">Địa chỉ giao hàng</label>
+                            <textarea asp-for="ShippingAddress" class="form-control" id="ShippingAddress" rows="3" required></textarea>
+                            <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="Note" class="form-label">Ghi chú</label>
+                            <textarea asp-for="Note" class="form-control" id="Note" rows="3" 
+                                    placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn"></textarea>
+                            <span asp-validation-for="Note" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="form-label d-block mb-3 required">Phương thức thanh toán</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="PaymentMethod" 
+                                       id="cod" value="COD" checked required />
+                                <label class="form-check-label" for="cod">
+                                    <i class="fas fa-money-bill-wave me-2" style="color: var(--cyber-green);"></i>
+                                    Thanh toán khi nhận hàng (COD)
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="PaymentMethod" 
+                                       id="banking" value="Banking" required />
+                                <label class="form-check-label" for="banking">
+                                    <i class="fas fa-university me-2" style="color: var(--cyber-blue);"></i>
+                                    Chuyển khoản ngân hàng
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="PaymentMethod" 
+                                       id="momo" value="Momo" required />
+                                <label class="form-check-label" for="momo">
+                                    <i class="fas fa-wallet me-2" style="color: var(--cyber-pink);"></i>
+                                    Ví điện tử Momo
+                                </label>
+                            </div>
+                            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-light">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại giỏ hàng
+                            </a>
+                            
+                            <button type="submit" class="btn btn-cyber" id="submitBtn">
+                                <i class="fas fa-check-circle me-2"></i>Đặt hàng
+                                <span class="spinner-border spinner-border-sm d-none" id="submitSpinner" role="status" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-cyber mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Đơn hàng của bạn</h4>
+                </div>
+                <div class="card-body">
+                    @if (!Model.CartItems.Any())
+                    {
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Giỏ hàng trống
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table" aria-label="Thông tin đơn hàng">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Sản phẩm</th>
+                                        <th scope="col" class="text-end">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.CartItems)
+                                    {
+                                        if (item?.Product != null)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="@item.Product.ImageUrl" alt="@item.Product.Name"
+                                                             class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: contain;" />
+                                                        <div>
+                                                            <div class="product-name">@item.Product.Name</div>
+                                                            <div class="text-muted">
+                                                                <small>Số lượng: @item.Quantity</small>
+                                                                <br/>
+                                                                <small>Đơn giá: @((item.Product.DiscountPrice ?? item.Product.Price).ToString("#,##0")) ₫</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-end">
+                                                    @{
+                                                        var total = item.Quantity * (item.Product.DiscountPrice ?? item.Product.Price);
+                                                    }
+                                                    @total.ToString("#,##0") <span>₫</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold" style="color: var(--cyber-blue);">
+                                        <td>Tổng cộng:</td>
+                                        <td class="text-end">
+                                            @Model.TotalAmount.ToString("#,##0") <span>₫</span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <small>Vui lòng kiểm tra kỹ thông tin đơn hàng trước khi đặt hàng</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .required::after {
+        content: " *";
+        color: red;
+    }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Xử lý form submit
+        const form = document.getElementById('checkoutForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitSpinner = document.getElementById('submitSpinner');
+
+        form.addEventListener('submit', function(e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitSpinner.classList.remove('d-none');
+        });
+
+        // Backup form data
+        form.addEventListener('input', function(e) {
+            const formData = {};
+            new FormData(form).forEach((value, key) => {
+                formData[key] = value;
+            });
+            localStorage.setItem('checkout_form_backup', JSON.stringify(formData));
+        });
+
+        // Restore form data
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const savedData = localStorage.getItem('checkout_form_backup');
+                if (savedData && !@(Model.CartItems.Any() ? "true" : "false")) {
+                    const formData = JSON.parse(savedData);
+                    
+                    Object.keys(formData).forEach(key => {
+                        const input = form.elements[key];
+                        if (input) {
+                            if (input.type === 'radio') {
+                                const radioBtn = document.querySelector(`input[name="${key}"][value="${formData[key]}"]`);
+                                if (radioBtn) {
+                                    radioBtn.checked = true;
+                                }
+                            } else {
+                                input.value = formData[key];
+                            }
+                        }
+                    });
+                    
+                    console.log('Form data restored from backup');
+                    localStorage.removeItem('checkout_form_backup');
+                }
+            } catch (err) {
+                console.error('Error restoring form data', err);
+            }
+        });
+    </script>
+} 

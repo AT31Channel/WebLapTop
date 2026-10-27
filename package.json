@@ -1,0 +1,17 @@
+{
+  "name": "weblaptop",
+  "version": "1.0.0",
+  "description": "WebLapTop E-commerce Website",
+  "scripts": {
+    "lint:css": "stylelint \"**/*.css\"",
+    "lint:scss": "stylelint \"**/*.scss\"",
+    "lint:fix": "stylelint \"**/*.{css,scss}\" --fix"
+  },
+  "devDependencies": {
+    "stylelint": "^15.10.3",
+    "stylelint-config-standard": "^34.0.0",
+    "stylelint-config-recommended": "^13.0.0",
+    "stylelint-config-recommended-scss": "^12.0.0",
+    "stylelint-scss": "^5.0.1"
+  }
+} 

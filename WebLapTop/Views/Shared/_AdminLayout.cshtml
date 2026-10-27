@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LapTop NPD Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --admin-primary: #1a237e;
+            --admin-secondary: #283593;
+            --admin-accent: #2196f3;
+            --admin-text: #212121;
+            --admin-text-secondary: #424242;
+            --admin-text-muted: #757575;
+            --admin-border: #e0e0e0;
+            --admin-hover: #f5f5f5;
+            --admin-card-bg: #ffffff;
+            --admin-input-bg: #f8f9fa;
+            --admin-success: #2e7d32;
+            --admin-warning: #f57f17;
+            --admin-danger: #d32f2f;
+            --admin-info: #1976d2;
+            --admin-bg: #f5f5f5;
+            --admin-sidebar-width: 250px;
+        }
+
+        body {
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .admin-sidebar {
+            background-color: var(--admin-card-bg);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--admin-sidebar-width);
+            padding-top: 1rem;
+            z-index: 1030;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .admin-content {
+            margin-left: var(--admin-sidebar-width);
+            padding: 2rem;
+            background-color: var(--admin-bg);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .admin-header {
+            background-color: white;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            color: var(--admin-text);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-nav-item {
+            padding: 0.75rem 1.5rem;
+            color: var(--admin-text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-radius: 0 2rem 2rem 0;
+            margin: 0.25rem 0;
+            font-weight: 500;
+        }
+
+        .admin-nav-item:hover, .admin-nav-item.active {
+            background-color: var(--admin-accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .admin-nav-item i {
+            width: 24px;
+            margin-right: 12px;
+            color: var(--admin-text-secondary);
+        }
+
+        .admin-nav-item:hover i, .admin-nav-item.active i {
+            color: white;
+        }
+
+        .admin-brand {
+            color: var(--admin-primary);
+            font-size: 1.5rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .admin-brand:hover {
+            color: var(--admin-primary);
+            text-decoration: none;
+        }
+
+        .admin-brand i {
+            margin-right: 10px;
+            color: var(--admin-primary);
+        }
+
+        .notification-badge {
+            background-color: var(--admin-danger);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            margin-left: auto;
+            font-weight: 600;
+        }
+
+        .card-cyber {
+            background-color: var(--admin-card-bg);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-cyber:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .card-cyber .card-header {
+            background-color: var(--admin-card-bg);
+            color: var(--admin-text);
+            border-bottom: 1px solid var(--admin-border);
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-cyber .card-header i {
+            margin-right: 10px;
+        }
+
+        .btn-cyber {
+            background-color: var(--admin-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-cyber:hover {
+            background-color: #1557b0;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn-cyber-light {
+            background-color: #e8f0fe;
+            color: var(--admin-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-cyber-light:hover {
+            background-color: #d2e3fc;
+            color: var(--admin-primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .table {
+            margin-bottom: 0;
+            color: var(--admin-text);
+            background-color: var(--admin-card-bg);
+        }
+
+        .table th {
+            border-top: none;
+            background-color: var(--admin-hover);
+            color: var(--admin-text);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 0.75rem;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: var(--admin-text);
+            padding: 1rem 0.75rem;
+            border-color: var(--admin-border);
+            font-weight: 500;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .form-control {
+            border-color: var(--admin-border);
+            padding: 0.6rem 1rem;
+            color: var(--admin-text);
+        }
+
+        .form-control:focus {
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+            color: var(--admin-text);
+        }
+
+        .form-label {
+            color: var(--admin-text);
+            font-weight: 500;
+        }
+
+        .btn-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--admin-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-bar .form-control {
+            padding-left: 2.5rem;
+            border-radius: 2rem;
+            background-color: var(--admin-bg);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--admin-text-light);
+        }
+
+        /* Styling cho badges */
+        .badge {
+            font-weight: 600;
+            padding: 0.4em 0.8em;
+            border-radius: 0.85rem;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        .dropdown-menu {
+            background-color: var(--admin-card-bg);
+            border: 1px solid var(--admin-border);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-item {
+            color: var(--admin-text);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--admin-hover);
+            color: var(--admin-accent);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Chart container height fix */
+        canvas {
+            width: 100% !important;
+        }
+
+        /* Responsive fixes */
+        @@media (max-width: 992px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .admin-sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .admin-content {
+                margin-left: 0;
+            }
+            
+            .btn-menu-toggle {
+                display: block;
+                margin-right: 1rem;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .admin-content {
+                padding: 1rem;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-bar {
+                width: 100%;
+                max-width: none;
+                margin-top: 1rem;
+            }
+        }
+
+        .bg-warning {
+            background-color: var(--admin-warning) !important;
+            color: white !important;
+        }
+
+        .bg-info {
+            background-color: var(--admin-info) !important;
+            color: white !important;
+        }
+
+        .bg-success {
+            background-color: var(--admin-success) !important;
+        }
+
+        .bg-danger {
+            background-color: var(--admin-danger) !important;
+        }
+
+        .btn-outline-light {
+            color: var(--admin-text);
+            border-color: var(--admin-border);
+        }
+
+        .btn-outline-light:hover {
+            background-color: var(--admin-hover);
+            color: var(--admin-accent);
+            border-color: var(--admin-accent);
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="admin-sidebar" id="adminSidebar">
+        <a href="/Admin" class="admin-brand">
+            <i class="fas fa-laptop"></i>
+            <span>LapTop NPD</span>
+        </a>
+        <nav>
+            <a asp-controller="Admin" asp-action="Index" 
+               class="admin-nav-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Tổng quan</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Products" 
+               class="admin-nav-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Products" || ViewContext.RouteData.Values["Action"]?.ToString() == "CreateProduct" || ViewContext.RouteData.Values["Action"]?.ToString() == "EditProduct" ? "active" : "")">
+                <i class="fas fa-laptop"></i>
+                <span>Sản phẩm</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Categories" 
+               class="admin-nav-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Categories" ? "active" : "")">
+                <i class="fas fa-tags"></i>
+                <span>Danh mục</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Orders" 
+               class="admin-nav-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Orders" || ViewContext.RouteData.Values["Action"]?.ToString() == "OrderDetails" ? "active" : "")">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Quản lý đơn hàng</span>
+                @if(ViewBag.UnreadNotifications > 0)
+                {
+                    <span class="notification-badge">@ViewBag.UnreadNotifications</span>
+                }
+            </a>
+            <a asp-controller="Admin" asp-action="Users" 
+               class="admin-nav-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active" : "")">
+                <i class="fas fa-users"></i>
+                <span>Quản lý người dùng</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Notifications" 
+               class="admin-nav-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Notifications" ? "active" : "")">
+                <i class="fas fa-bell"></i>
+                <span>Thông báo</span>
+                @if(ViewBag.UnreadNotifications > 0)
+                {
+                    <span class="notification-badge">@ViewBag.UnreadNotifications</span>
+                }
+            </a>
+            <div class="mt-auto">
+                <a asp-controller="Account" asp-action="Logout" 
+                   class="admin-nav-item text-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Đăng xuất</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="sidebar-backdrop backdrop-hidden" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <div class="admin-content">
+        <div class="admin-header">
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn-menu-toggle me-3" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="search-bar me-3 d-none d-md-block">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control" placeholder="Tìm kiếm..." id="adminSearch">
+                </div>
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle fs-5 me-2"></i>
+                        <span class="d-none d-md-inline">Admin</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Hồ sơ</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài đặt</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();">
+                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function showToast(icon, title, text) {
+            Swal.fire({
+                icon: icon,
+                title: title,
+                text: text,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+        
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('sidebar-show');
+            document.getElementById('sidebarBackdrop').classList.toggle('backdrop-visible');
+        }
+        
+        $(document).ready(function() {
+            if (@Json.Serialize(TempData["Success"] != null)) {
+                showToast('success', 'Thành công', @Json.Serialize(TempData["Success"]));
+            }
+            
+            if (@Json.Serialize(TempData["Error"] != null)) {
+                showToast('error', 'Lỗi', @Json.Serialize(TempData["Error"]));
+            }
+            
+            $('#adminSearch').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('.searchable-item').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            
+            $('.card-cyber').addClass('fade-in');
+            
+            function handleResize() {
+                if (window.innerWidth < 992) {
+                    document.getElementById('adminSidebar').classList.add('sidebar-responsive');
+                    document.querySelector('.admin-content').classList.add('content-responsive');
+                    document.querySelector('.btn-menu-toggle').classList.add('btn-menu-show');
+                } else {
+                    document.getElementById('adminSidebar').classList.remove('sidebar-responsive', 'sidebar-show');
+                    document.querySelector('.admin-content').classList.remove('content-responsive');
+                    document.querySelector('.btn-menu-toggle').classList.remove('btn-menu-show');
+                    document.getElementById('sidebarBackdrop').classList.remove('backdrop-visible');
+                    document.getElementById('sidebarBackdrop').classList.add('backdrop-hidden');
+                }
+            }
+            
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

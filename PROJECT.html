@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebLapTop — Tài liệu dự án</title>
+<style>
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+    --border: #30363d; --blue: #58a6ff; --green: #3fb950;
+    --yellow: #f7d747; --red: #f85149; --gray: #8b949e;
+    --white: #e6edf3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.6; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 2rem; z-index: 100; height: 52px; }
+  nav .brand { color: var(--blue); font-weight: 700; font-size: 1.1rem; }
+  nav a { color: var(--gray); font-size: 0.9rem; }
+  nav a:hover { color: var(--white); text-decoration: none; }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 3rem 1rem 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
+  .hero h1 { font-size: 2.2rem; color: var(--blue); margin-bottom: .5rem; }
+  .hero p { color: var(--gray); font-size: 1rem; }
+  .badges { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+  .badge { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: .25rem .75rem; font-size: .8rem; color: var(--gray); }
+  .badge.blue { border-color: var(--blue); color: var(--blue); }
+  .badge.green { border-color: var(--green); color: var(--green); }
+
+  /* SECTION */
+  section { margin-bottom: 3rem; }
+  h2 { font-size: 1.3rem; color: var(--white); border-bottom: 1px solid var(--border); padding-bottom: .5rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: .5rem; }
+  h2 .icon { font-size: 1.1rem; }
+  h3 { font-size: 1rem; color: var(--blue); margin: 1.25rem 0 .6rem; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; background: var(--bg2); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  th { background: var(--bg3); color: var(--gray); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; padding: .6rem 1rem; text-align: left; }
+  td { padding: .65rem 1rem; border-top: 1px solid var(--border); font-size: .9rem; }
+  td code { background: var(--bg3); padding: .1rem .4rem; border-radius: 4px; font-size: .85rem; color: var(--blue); }
+  tr:hover td { background: var(--bg3); }
+
+  /* FOLDER TREE */
+  .tree { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; font-family: "Consolas", "Courier New", monospace; font-size: .85rem; line-height: 1.8; overflow-x: auto; white-space: pre; }
+  .tree .dir { color: var(--blue); font-weight: 600; }
+  .tree .file { color: var(--white); }
+  .tree .comment { color: var(--gray); }
+
+  /* DB DIAGRAM */
+  .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+  .db-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .db-card .db-header { background: var(--bg3); padding: .5rem 1rem; font-weight: 600; font-size: .9rem; color: var(--blue); border-bottom: 1px solid var(--border); }
+  .db-card ul { list-style: none; padding: .5rem 1rem; }
+  .db-card ul li { font-size: .82rem; color: var(--gray); padding: .15rem 0; border-bottom: 1px solid var(--border); }
+  .db-card ul li:last-child { border-bottom: none; }
+  .db-card ul li .pk { color: var(--yellow); font-size: .7rem; margin-right: .3rem; }
+  .db-card ul li .fk { color: var(--green); font-size: .7rem; margin-right: .3rem; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+  .checklist li { display: flex; align-items: flex-start; gap: .6rem; font-size: .9rem; padding: .4rem .75rem; border-radius: 6px; background: var(--bg2); border: 1px solid var(--border); }
+  .checklist li .icon { flex-shrink: 0; margin-top: .1rem; }
+  .checklist li.done { border-color: #2ea04326; }
+  .checklist li.done .icon { color: var(--green); }
+  .checklist li.todo { border-color: #f851491a; }
+  .checklist li.todo .icon { color: var(--red); }
+  .checklist li strong { color: var(--white); }
+  .checklist li span { color: var(--gray); font-size: .85rem; }
+
+  /* PRIORITY CARDS */
+  .priority-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .priority-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+  .priority-card .p-title { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .75rem; padding: .25rem .6rem; border-radius: 4px; display: inline-block; }
+  .p-high .p-title { background: #f8514920; color: var(--red); }
+  .p-mid .p-title { background: #f7d74720; color: var(--yellow); }
+  .p-low .p-title { background: #3fb95020; color: var(--green); }
+  .priority-card ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+  .priority-card ul li { font-size: .85rem; color: var(--gray); padding-left: 1rem; position: relative; }
+  .priority-card ul li::before { content: "○"; position: absolute; left: 0; color: var(--border); }
+  .priority-card ul li strong { color: var(--white); }
+
+  /* CODE BLOCK */
+  .code-block { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; font-family: "Consolas", monospace; font-size: .85rem; line-height: 1.8; overflow-x: auto; color: var(--white); }
+  .code-block .comment { color: var(--gray); }
+  .code-block .cmd { color: var(--green); }
+
+  /* SEED TABLE */
+  .seed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:600px){ .seed-grid { grid-template-columns: 1fr; } .priority-grid { grid-template-columns: 1fr; } }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; color: var(--gray); font-size: .85rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">💻 WebLapTop</span>
+  <a href="#tech">Công nghệ</a>
+  <a href="#structure">Cấu trúc</a>
+  <a href="#database">Database</a>
+  <a href="#done">Đã làm</a>
+  <a href="#todo">Cần làm</a>
+  <a href="#run">Chạy app</a>
+</nav>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>WebLapTop</h1>
+    <p>Ứng dụng web bán laptop — ASP.NET Core 8 MVC</p>
+    <div class="badges">
+      <span class="badge blue">.NET 8</span>
+      <span class="badge blue">ASP.NET Core MVC</span>
+      <span class="badge blue">Entity Framework Core 8</span>
+      <span class="badge blue">SQL Server</span>
+      <span class="badge green">Bootstrap 5</span>
+      <span class="badge green">jQuery</span>
+      <span class="badge">Font Awesome 6</span>
+    </div>
+  </div>
+
+  <!-- TECH -->
+  <section id="tech">
+    <h2><span class="icon">⚙️</span> Công nghệ sử dụng</h2>
+    <table>
+      <thead><tr><th>Thành phần</th><th>Chi tiết</th></tr></thead>
+      <tbody>
+        <tr><td>Framework</td><td><code>ASP.NET Core 8 MVC</code></td></tr>
+        <tr><td>ORM</td><td><code>Entity Framework Core 8</code></td></tr>
+        <tr><td>Database</td><td><code>SQL Server</code> — Windows Authentication</td></tr>
+        <tr><td>Authentication</td><td><code>ASP.NET Core Identity</code> — Role: Admin, User</td></tr>
+        <tr><td>UI Framework</td><td><code>Bootstrap 5</code>, <code>Font Awesome 6</code>, <code>jQuery</code></td></tr>
+        <tr><td>Email</td><td><code>IEmailSender</code> — SMTP Gmail</td></tr>
+        <tr><td>Session</td><td><code>IDistributedMemoryCache</code> — 30 phút timeout</td></tr>
+        <tr><td>Build / Run</td><td><code>dotnet CLI</code> / <code>runapp.bat</code></td></tr>
+        <tr><td>Validation</td><td><code>jquery-validation</code> + <code>jquery-validation-unobtrusive</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- STRUCTURE -->
+  <section id="structure">
+    <h2><span class="icon">📁</span> Cấu trúc thư mục</h2>
+    <div class="tree">
+<span class="dir">WebLapTop/</span>
+├── <span class="dir">Areas/Admin/</span>
+│   ├── <span class="dir">Controllers/</span>
+│   │   ├── <span class="file">CategoryController.cs</span>  <span class="comment"># CRUD danh mục</span>
+│   │   ├── <span class="file">ProductController.cs</span>   <span class="comment"># CRUD sản phẩm</span>
+│   │   └── <span class="file">OrderController.cs</span>     <span class="comment"># Quản lý đơn hàng</span>
+│   └── <span class="dir">Views/</span>  <span class="comment">Category/, Product/, Order/</span>
+│
+├── <span class="dir">Controllers/</span>
+│   ├── <span class="file">HomeController.cs</span>          <span class="comment"># Trang chủ, tìm kiếm, lọc, phân trang</span>
+│   ├── <span class="file">AccountController.cs</span>       <span class="comment"># Đăng ký, đăng nhập, profile</span>
+│   ├── <span class="file">CartController.cs</span>          <span class="comment"># Giỏ hàng, checkout, lịch sử đơn hàng</span>
+│   ├── <span class="file">OrderController.cs</span>         <span class="comment"># Chi tiết đơn, hủy đơn, đánh giá</span>
+│   ├── <span class="file">NotificationController.cs</span>  <span class="comment"># Thông báo khách hàng</span>
+│   ├── <span class="file">AdminController.cs</span>         <span class="comment"># Dashboard, quản lý user</span>
+│   └── <span class="file">ErrorController.cs</span>         <span class="comment"># Xử lý lỗi 404/500</span>
+│
+├── <span class="dir">Data/</span>
+│   ├── <span class="file">ApplicationDbContext.cs</span>    <span class="comment"># DbContext + seed data</span>
+│   └── <span class="file">DbInitializer.cs</span>           <span class="comment"># Tạo role/admin lúc startup</span>
+│
+├── <span class="dir">Migrations/</span>                    <span class="comment"># 7 migration EF Core</span>
+│
+├── <span class="dir">Models/Entities/</span>               <span class="comment"># 13 entity</span>
+│   ├── <span class="file">Product.cs, Category.cs</span>
+│   ├── <span class="file">Cart.cs, Order.cs, OrderDetail.cs</span>
+│   ├── <span class="file">Review.cs, Warranty.cs, Promotion.cs</span>
+│   ├── <span class="file">ProductImage.cs, ProductSpecification.cs</span>
+│   ├── <span class="file">AdminNotification.cs, CustomerNotification.cs</span>
+│   └── <span class="file">ApplicationUser.cs</span>         <span class="comment"># Extends IdentityUser</span>
+│
+├── <span class="dir">Models/ViewModels/</span>             <span class="comment"># 11 ViewModel</span>
+│
+├── <span class="dir">Services/</span>
+│   ├── <span class="file">IProductService.cs</span>
+│   ├── <span class="file">ProductService.cs</span>
+│   └── <span class="file">EmailSender.cs</span>
+│
+├── <span class="dir">Views/</span>
+│   ├── <span class="dir">Account/</span>      <span class="comment">Login, Register, Profile</span>
+│   ├── <span class="dir">Admin/</span>        <span class="comment">Dashboard, Products, Categories, Orders, Users</span>
+│   ├── <span class="dir">Cart/</span>         <span class="comment">Index, Checkout, OrderConfirmation, OrderHistory</span>
+│   ├── <span class="dir">Home/</span>         <span class="comment">Index, Details, About, Contact, Privacy</span>
+│   ├── <span class="dir">Notification/</span> <span class="comment">Index, Details</span>
+│   ├── <span class="dir">Order/</span>        <span class="comment">Details, History</span>
+│   └── <span class="dir">Shared/</span>       <span class="comment">_Layout, _AdminLayout, _LoginPartial</span>
+│
+├── <span class="dir">wwwroot/</span>
+│   ├── <span class="dir">css/</span>  <span class="comment">site.css</span>
+│   ├── <span class="dir">js/</span>   <span class="comment">site.js</span>
+│   ├── <span class="dir">images/products/</span>  <span class="comment">3 ảnh sản phẩm mẫu</span>
+│   └── <span class="dir">lib/</span>  <span class="comment">bootstrap, jquery, jquery-validation</span>
+│
+├── <span class="file">Program.cs</span>                     <span class="comment"># Startup, DI, tự động tìm port</span>
+├── <span class="file">appsettings.json</span>               <span class="comment"># Cấu hình mẫu</span>
+└── <span class="file">web.config</span>                     <span class="comment"># IIS config</span>
+    </div>
+  </section>
+
+  <!-- DATABASE -->
+  <section id="database">
+    <h2><span class="icon">🗄️</span> Database</h2>
+    <div class="db-grid">
+      <div class="db-card">
+        <div class="db-header">AspNetUsers (ApplicationUser)</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>UserName, Email</li>
+          <li>HoTen, DiaChi</li>
+          <li>PhoneNumber</li>
+          <li>→ Carts, Orders, Reviews</li>
+          <li>→ CustomerNotifications</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">Categories</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Name, Description</li>
+          <li>DisplayOrder, IsVisible</li>
+          <li>→ Products</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">Products</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Name, Description</li>
+          <li>Price, DiscountPrice</li>
+          <li>Stock, ImageUrl</li>
+          <li>IsAvailable, IsFeatured, IsVisible</li>
+          <li><span class="fk">FK</span> CategoryId</li>
+          <li>→ Carts, OrderDetails, Reviews</li>
+          <li>→ ProductImages, ProductSpecifications, Warranties</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">Orders</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>OrderDate, Status</li>
+          <li>TotalAmount, PaymentMethod</li>
+          <li>FullName, PhoneNumber, Email</li>
+          <li>ShippingAddress, Note</li>
+          <li><span class="fk">FK</span> UserId</li>
+          <li>→ OrderDetails</li>
+          <li>→ AdminNotifications, CustomerNotifications</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">OrderDetails</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Quantity, UnitPrice</li>
+          <li>IsReviewed</li>
+          <li><span class="fk">FK</span> OrderId</li>
+          <li><span class="fk">FK</span> ProductId</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">Carts</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Quantity, UnitPrice</li>
+          <li>AddedDate</li>
+          <li><span class="fk">FK</span> UserId</li>
+          <li><span class="fk">FK</span> ProductId</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">Reviews</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Rating (1-5), Comment</li>
+          <li>CreatedDate</li>
+          <li><span class="fk">FK</span> ProductId, UserId, OrderId</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">Promotions</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Name, Description</li>
+          <li>DiscountType, DiscountValue</li>
+          <li>StartDate, EndDate, IsActive</li>
+          <li style="color:#f85149">⚠ Chưa liên kết với Order</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">AdminNotifications</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Title, Message, Type</li>
+          <li>IsRead, CreateDate</li>
+          <li><span class="fk">FK</span> OrderId</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">CustomerNotifications</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>Title, Message, Type, Link</li>
+          <li>IsRead, CreateDate</li>
+          <li><span class="fk">FK</span> UserId, OrderId</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">ProductImages</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>ImageUrl, DisplayOrder, IsDefault</li>
+          <li><span class="fk">FK</span> ProductId</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">ProductSpecifications</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>SpecName, SpecValue, DisplayOrder</li>
+          <li><span class="fk">FK</span> ProductId</li>
+        </ul>
+      </div>
+      <div class="db-card">
+        <div class="db-header">Warranties</div>
+        <ul>
+          <li><span class="pk">PK</span> Id</li>
+          <li>WarrantyPeriod (tháng)</li>
+          <li>Description, Terms</li>
+          <li><span class="fk">FK</span> ProductId</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Seed data mặc định</h3>
+    <div class="seed-grid">
+      <table>
+        <thead><tr><th>Loại</th><th>Dữ liệu</th></tr></thead>
+        <tbody>
+          <tr><td>Roles</td><td><code>Admin</code>, <code>User</code></td></tr>
+          <tr><td>Admin</td><td>admin@weblaptop.com / Admin@123</td></tr>
+          <tr><td>User mẫu</td><td>user@weblaptop.com / User@123</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Loại</th><th>Dữ liệu</th></tr></thead>
+        <tbody>
+          <tr><td>Danh mục</td><td>Gaming, Văn Phòng, Đồ Họa</td></tr>
+          <tr><td>Sản phẩm</td><td>Acer Nitro 5, Dell Vostro 3520, MSI Creator Z16</td></tr>
+          <tr><td>Khuyến mãi</td><td>2 mẫu (tựu trường, cuối năm)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section id="done">
+    <h2><span class="icon">✅</span> Đã làm được</h2>
+    <h3>Khách hàng</h3>
+    <ul class="checklist">
+      <li class="done"><span class="icon">✓</span><div>Trang chủ: danh sách sản phẩm, lọc danh mục, tìm kiếm, sắp xếp giá, phân trang</div></li>
+      <li class="done"><span class="icon">✓</span><div>Chi tiết sản phẩm + sản phẩm liên quan</div></li>
+      <li class="done"><span class="icon">✓</span><div>Đăng ký / Đăng nhập / Đăng xuất</div></li>
+      <li class="done"><span class="icon">✓</span><div>Xem &amp; cập nhật profile</div></li>
+      <li class="done"><span class="icon">✓</span><div>Giỏ hàng: thêm, cập nhật số lượng, xóa</div></li>
+      <li class="done"><span class="icon">✓</span><div>Checkout: nhập địa chỉ, chọn phương thức thanh toán (COD)</div></li>
+      <li class="done"><span class="icon">✓</span><div>Lịch sử đơn hàng + chi tiết đơn hàng</div></li>
+      <li class="done"><span class="icon">✓</span><div>Hủy đơn hàng (chỉ khi trạng thái <code>Pending</code>)</div></li>
+      <li class="done"><span class="icon">✓</span><div>Đánh giá sản phẩm (sau khi đơn <code>Delivered</code>)</div></li>
+      <li class="done"><span class="icon">✓</span><div>Thông báo khách hàng (đặt hàng, hủy đơn)</div></li>
+    </ul>
+
+    <h3>Admin</h3>
+    <ul class="checklist">
+      <li class="done"><span class="icon">✓</span><div>Dashboard tổng quan</div></li>
+      <li class="done"><span class="icon">✓</span><div>Quản lý sản phẩm: xem, thêm, sửa, xóa</div></li>
+      <li class="done"><span class="icon">✓</span><div>Quản lý danh mục: xem, thêm <span style="color:var(--yellow)">(Edit còn thiếu view)</span></div></li>
+      <li class="done"><span class="icon">✓</span><div>Quản lý đơn hàng: xem danh sách, chi tiết, cập nhật trạng thái</div></li>
+      <li class="done"><span class="icon">✓</span><div>Quản lý người dùng: xem, thêm, sửa, xem chi tiết</div></li>
+      <li class="done"><span class="icon">✓</span><div>Thông báo admin khi có đơn hàng mới</div></li>
+    </ul>
+
+    <h3>Hệ thống</h3>
+    <ul class="checklist">
+      <li class="done"><span class="icon">✓</span><div>ASP.NET Core Identity — đăng ký, đăng nhập, phân quyền Role</div></li>
+      <li class="done"><span class="icon">✓</span><div>EF Core migrations + seed data</div></li>
+      <li class="done"><span class="icon">✓</span><div>Session (30 phút)</div></li>
+      <li class="done"><span class="icon">✓</span><div>Tự động tìm port trống khi khởi động</div></li>
+      <li class="done"><span class="icon">✓</span><div>Xử lý lỗi 404</div></li>
+      <li class="done"><span class="icon">✓</span><div>Transaction khi đặt hàng (rollback nếu lỗi)</div></li>
+    </ul>
+  </section>
+
+  <!-- TODO -->
+  <section id="todo">
+    <h2><span class="icon">🔧</span> Cần làm thêm</h2>
+    <div class="priority-grid">
+      <div class="priority-card p-high">
+        <div class="p-title">🔴 Ưu tiên cao</div>
+        <ul>
+          <li><strong>Bootstrap/jQuery thiếu file</strong> — <code>wwwroot/lib/</code> chỉ có LICENSE, cần <code>libman restore</code></li>
+          <li><strong>Admin Edit danh mục</strong> — thiếu <code>Edit.cshtml</code> trong Areas/Admin/Views/Category</li>
+          <li><strong>Tích hợp Promotion</strong> — bảng đã có nhưng chưa áp dụng khi checkout</li>
+          <li><strong>Thanh toán online</strong> — hiện chỉ COD, cần VNPay / MoMo / ZaloPay</li>
+        </ul>
+      </div>
+      <div class="priority-card p-mid">
+        <div class="p-title">🟡 Ưu tiên trung bình</div>
+        <ul>
+          <li><strong>ProductImage &amp; Specification</strong> — entity có, seed có, chưa hiển thị trên trang chi tiết SP</li>
+          <li><strong>Warranty</strong> — entity có nhưng chưa hiển thị</li>
+          <li><strong>Phân trang Admin</strong> — danh sách SP/đơn hàng/user chưa có phân trang</li>
+          <li><strong>Tìm kiếm Admin</strong> — chưa có filter trong các trang quản lý</li>
+          <li><strong>Upload ảnh sản phẩm</strong> — hiện chỉ nhập URL thủ công</li>
+          <li><strong>Email xác nhận đơn hàng</strong> — EmailSender có nhưng chưa gọi sau checkout</li>
+          <li><strong>Quên mật khẩu</strong> — ViewModel có nhưng chưa implement flow reset</li>
+        </ul>
+      </div>
+      <div class="priority-card p-low">
+        <div class="p-title">🟢 Ưu tiên thấp</div>
+        <ul>
+          <li><strong>Thống kê doanh thu</strong> — Dashboard hiện là placeholder</li>
+          <li><strong>Xuất báo cáo</strong> — Excel/PDF đơn hàng</li>
+          <li><strong>Wishlist</strong> — danh sách yêu thích</li>
+          <li><strong>So sánh sản phẩm</strong></li>
+          <li><strong>SEO</strong> — meta tags, sitemap</li>
+          <li><strong>Responsive Admin</strong> — _AdminLayout chưa tối ưu mobile</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RUN -->
+  <section id="run">
+    <h2><span class="icon">🚀</span> Chạy dự án</h2>
+    <div class="code-block">
+<span class="comment"># 1. Tạo file cấu hình local</span>
+<span class="cmd">cp WebLapTop/appsettings.json WebLapTop/appsettings.Development.json</span>
+<span class="comment"># Sửa YOUR_SERVER_NAME trong appsettings.Development.json</span>
+
+<span class="comment"># 2. Migrate database</span>
+<span class="cmd">dotnet ef database update --project WebLapTop</span>
+
+<span class="comment"># 3. Chạy app</span>
+<span class="cmd">runapp.bat</span>
+<span class="comment"># hoặc</span>
+<span class="cmd">dotnet run --project WebLapTop</span>
+    </div>
+
+    <h3>Tài khoản mặc định</h3>
+    <table style="max-width:500px">
+      <thead><tr><th>Role</th><th>Email</th><th>Mật khẩu</th></tr></thead>
+      <tbody>
+        <tr><td><span style="color:var(--red)">Admin</span></td><td>admin@weblaptop.com</td><td><code>Admin@123</code></td></tr>
+        <tr><td><span style="color:var(--green)">User</span></td><td>user@weblaptop.com</td><td><code>User@123</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<footer>
+  WebLapTop — ASP.NET Core 8 MVC &nbsp;|&nbsp; Entity Framework Core 8 &nbsp;|&nbsp; SQL Server
+</footer>
+
+</body>
+</html>

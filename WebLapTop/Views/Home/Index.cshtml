@@ -1,0 +1,313 @@
+@using System.Linq
+@model IEnumerable<WebLapTop.Models.Entities.Product>
+
+@{
+    ViewData["Title"] = "Trang chủ";
+    bool isPriceAsc = ViewBag.CurrentSort == "price_asc";
+    bool isPriceDesc = ViewBag.CurrentSort == "price_desc";
+    string currentCategory = ViewBag.CurrentCategory ?? string.Empty;
+}
+
+<div class="container-fluid py-5">
+    <!-- Banner -->
+    <div class="row mb-5 animate-fadeInUp">
+        <div class="col-12">
+            <div class="main-banner" style="background: url('/images/banner_laptop-gaming.jpg') center/cover no-repeat; height: 400px;">
+                <div class="main-banner-overlay"></div>
+                <div class="main-banner-content" style="max-width: 900px; padding: 2rem;">
+                    <h1 class="display-4 fw-bold" style="text-shadow: 0 0 20px rgba(0, 243, 255, 0.8); letter-spacing: 2px; white-space: nowrap;">Chất lượng tạo nên thương hiệu</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="sidebar mb-4 animate-fadeInUp">
+                <h4 class="sidebar-title">
+                    <i class="fas fa-list me-2"></i>Danh mục sản phẩm
+                </h4>
+                <ul class="category-list">
+                    <li class="category-item">
+                        @if (string.IsNullOrEmpty(currentCategory))
+                        {
+                            <a href="@Url.Action("Index")" class="category-link active">
+                                <i class="fas fa-laptop me-2"></i> Tất cả sản phẩm
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index")" class="category-link">
+                                <i class="fas fa-laptop me-2"></i> Tất cả sản phẩm
+                            </a>
+                        }
+                    </li>
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <li class="category-item">
+                            @if (category.Name == currentCategory)
+                            {
+                                <a href="@Url.Action("Index", new { category = category.Name })" class="category-link active">
+                                    <i class="fas fa-angle-right me-2"></i> @category.Name
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", new { category = category.Name })" class="category-link">
+                                    <i class="fas fa-angle-right me-2"></i> @category.Name
+                                </a>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="sidebar mb-4 animate-fadeInUp" style="animation-delay: 0.1s;">
+                <h4 class="sidebar-title">
+                    <i class="fas fa-filter me-2"></i>Lọc theo giá
+                </h4>
+                <form method="get" action="@Url.Action("Index")" class="mt-3">
+                    <input type="hidden" name="category" value="@ViewBag.CurrentCategory" />
+                    <input type="hidden" name="search" value="@ViewBag.CurrentSearch" />
+                    <select name="sort" class="form-select mb-3">
+                        <option value="">Mặc định</option>
+                        @if (isPriceAsc)
+                        {
+                            <option value="price_asc" selected="selected">Giá: Thấp đến cao</option>
+                        }
+                        else
+                        {
+                            <option value="price_asc">Giá: Thấp đến cao</option>
+                        }
+                        
+                        @if (isPriceDesc)
+                        {
+                            <option value="price_desc" selected="selected">Giá: Cao đến thấp</option>
+                        }
+                        else
+                        {
+                            <option value="price_desc">Giá: Cao đến thấp</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-cyber w-100">
+                        <i class="fas fa-sort-amount-down me-2"></i>Lọc
+                    </button>
+                </form>
+            </div>
+
+            <div class="sidebar animate-fadeInUp" style="animation-delay: 0.2s;">
+                <h4 class="sidebar-title">
+                    <i class="fas fa-search me-2"></i>Tìm kiếm
+                </h4>
+                <form method="get" action="@Url.Action("Index")" class="mt-3">
+                    <input type="hidden" name="category" value="@ViewBag.CurrentCategory" />
+                    <input type="hidden" name="sort" value="@ViewBag.CurrentSort" />
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..." value="@ViewBag.CurrentSearch">
+                        <button class="btn btn-cyber" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Thêm banner quảng cáo -->
+            <div class="sidebar mt-4 text-center animate-fadeInUp" style="animation-delay: 0.3s; background: linear-gradient(to right, #0a1525, #1a2a40);">
+                <div class="p-2">
+                    <h5 style="color: var(--cyber-blue);">Ưu đãi đặc biệt</h5>
+                    <p class="mb-1">Giảm đến 20% cho sinh viên</p>
+                    <div class="mb-3 py-2" style="font-size: 2rem; font-weight: bold; color: var(--cyber-pink);">20% OFF</div>
+                    <a href="#" class="btn btn-cyber btn-sm">Xem ngay</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product List Area -->
+        <div class="col-lg-9 col-md-8" id="products">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4 animate-fadeInUp">
+                <h2 class="h4 mb-0 fw-bold" style="color: var(--cyber-blue);">
+                    <i class="fas fa-laptop-code me-2"></i>@(String.IsNullOrEmpty(ViewBag.CurrentCategory) ? "Tất cả sản phẩm" : ViewBag.CurrentCategory)
+                </h2>
+                <div class="d-flex align-items-center">
+                    <span class="me-2 badge bg-secondary">Hiển thị @Model.Count() sản phẩm</span>
+                </div>
+                        </div>
+
+            <!-- Product grid -->
+            <div class="row g-4 mb-5">
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="col-12 text-center py-5 animate-fadeInUp">
+                        <i class="fas fa-search fa-3x mb-3" style="color: var(--cyber-blue);"></i>
+                        <h3>Không tìm thấy sản phẩm nào</h3>
+                        <p>Vui lòng thử lại với từ khóa khác</p>
+                        <a href="@Url.Action("Index")" class="btn btn-cyber mt-2">Xem tất cả sản phẩm</a>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var product in Model)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card card-cyber h-100">
+                                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: contain;">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">@product.Name</h5>
+                                    <p class="card-text text-truncate">@product.Description</p>
+                                    <div class="mt-auto">
+                                        @if (product.DiscountPrice.HasValue)
+                                        {
+                                            <p class="text-decoration-line-through text-muted mb-1">
+                                                @product.Price.ToString("#,##0") ₫
+                                            </p>
+                                            <p class="text-danger fw-bold fs-5 mb-3">
+                                                @product.DiscountPrice.Value.ToString("#,##0") ₫
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-light fw-bold fs-5 mb-3">
+                                                @product.Price.ToString("#,##0") ₫
+                                            </p>
+                                        }
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="@Url.Action("Details", "Home", new { id = product.Id })" class="btn btn-view-details">
+                                                <i class="fas fa-info-circle me-1"></i>Chi tiết
+                                            </a>
+                                            @if (product.IsAvailable && product.Stock > 0)
+                                            {
+                                                @if (User.Identity?.IsAuthenticated == true)
+                                                {
+                                                    <button class="btn btn-buy" onclick="addToCart(@product.Id, 1)">
+                                                        <i class="fas fa-shopping-cart me-1"></i>Mua ngay
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("Details", "Home", new { id = product.Id }) })" 
+                                                       class="btn btn-buy login-register-link">
+                                                        <i class="fas fa-shopping-cart me-1"></i>Mua ngay
+                                                    </a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-secondary" disabled>
+                                                    <i class="fas fa-times-circle me-1"></i>Hết hàng
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+    </div>
+
+            <!-- Pagination -->
+    @if (ViewBag.TotalPages > 1)
+    {
+                <div class="d-flex justify-content-center mt-5 animate-fadeInUp">
+                    <nav aria-label="Phân trang">
+                <ul class="pagination">
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { 
+                                page = i, 
+                                category = ViewBag.CurrentCategory,
+                                search = ViewBag.CurrentSearch,
+                                sort = ViewBag.CurrentSort
+                            })">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+    </div>
+</div>
+
+<style>
+    .btn-view-details {
+        background-color: #30363d;
+        color: #ffffff;
+        border: 1px solid #484f58;
+    }
+
+    .btn-view-details:hover {
+        background-color: #484f58;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .btn-buy {
+        background-color: #238636;
+        color: #ffffff;
+        border: 1px solid #2ea043;
+    }
+
+    .btn-buy:hover {
+        background-color: #2ea043;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .login-register-link {
+        color: #ffffff;
+        text-decoration: underline;
+    }
+
+    .login-register-link:hover {
+        color: #58a6ff;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        async function addToCart(productId, quantity = 1) {
+            try {
+                const response = await fetch('/Cart/AddToCart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(result.message, 'success');
+                    // Cập nhật số lượng trong giỏ hàng
+                    const cartCountElement = document.querySelector('.cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = parseInt(cartCountElement.textContent || '0') + quantity;
+                    }
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng', 'danger');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+    </script>
+}

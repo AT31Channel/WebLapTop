@@ -1,0 +1,187 @@
+@model WebLapTop.Models.Entities.Order
+
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        @(TempData["Success"] != null ? TempData["Success"] : $"Đơn hàng #{Model.Id} đã được đặt thành công!")
+                        <br>
+                        <span class="fw-normal mt-2 d-block">Dữ liệu đã được chuyển tới nhân viên quản lý. Chúng tôi sẽ xử lý đơn hàng của bạn trong thời gian sớm nhất.</span>
+                    </div>
+
+                    <h2 class="mb-4">Đơn hàng #@Model.Id đã được tiếp nhận!</h2>
+                    
+                    <div class="order-info mb-4 p-4 bg-light rounded">
+                        <div class="row">
+                            <div class="col-md-6 text-start">
+                                <p class="mb-2"><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                <p class="mb-2"><strong>Tổng tiền:</strong> <span class="text-danger">@Model.TotalAmount.ToString("#,##0") ₫</span></p>
+                                <p class="mb-2"><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p>
+                                <p class="mb-0"><strong>Trạng thái:</strong> <span class="badge bg-warning">@Model.Status</span></p>
+                            </div>
+                            <div class="col-md-6 text-start">
+                                <p class="mb-2"><strong>Số điện thoại:</strong> @Model.PhoneNumber</p>
+                                <p class="mb-0"><strong>Địa chỉ:</strong> @Model.ShippingAddress</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mb-4" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle me-3 fa-2x"></i>
+                            <div class="text-start">
+                                <strong>Thông tin quan trọng:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Đơn hàng của bạn đang được xử lý.</li>
+                                    <li>Bạn có thể theo dõi đơn hàng tại trang <a href="@Url.Action("OrderHistory", "Cart")" class="alert-link">Lịch sử đơn hàng</a>.</li>
+                                    <li>Bạn có thể hủy đơn hàng nếu đơn hàng vẫn đang ở trạng thái "Đang xử lý".</li>
+                                    <li>Chúng tôi sẽ gửi email thông báo khi đơn hàng được xác nhận.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mb-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-center">Số lượng</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@item.Product?.ImageUrl" alt="@item.Product?.Name" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: contain;" />
+                                                <div>
+                                                    <div class="fw-bold">@(item.Product?.Name ?? "Sản phẩm không còn tồn tại")</div>
+                                                    <small class="text-muted">ID: @item.ProductId</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">@item.UnitPrice.ToString("#,##0") ₫</td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">@((item.UnitPrice * item.Quantity).ToString("#,##0")) ₫</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                                    <td class="text-end"><strong class="text-danger">@Model.TotalAmount.ToString("#,##0") ₫</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="@Url.Action("OrderDetails", "Cart", new { id = Model.Id })" class="btn btn-primary">
+                            <i class="fas fa-eye me-2"></i>Xem chi tiết đơn hàng
+                        </a>
+                        <a href="@Url.Action("OrderHistory", "Cart")" class="btn btn-info">
+                            <i class="fas fa-history me-2"></i>Lịch sử đơn hàng
+                        </a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                            <i class="fas fa-times-circle me-2"></i>Hủy đơn hàng
+                        </button>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+                            <i class="fas fa-shopping-cart me-2"></i>Tiếp tục mua sắm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xác nhận hủy đơn hàng -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelOrderModalLabel">Xác nhận hủy đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @Html.AntiForgeryToken()
+                <p>Bạn có chắc chắn muốn hủy đơn hàng #@Model.Id?</p>
+                <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác sau khi xác nhận.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelOrder">Xác nhận hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+    .order-info {
+        background-color: #f8f9fa;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#confirmCancelOrder").click(function () {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: '@Url.Action("CancelOrder", "Cart")',
+                    type: 'POST',
+                    data: JSON.stringify({ orderId: @Model.Id }),
+                    contentType: 'application/json',
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            // Ẩn modal
+                            $('#cancelOrderModal').modal('hide');
+                            
+                            // Hiển thị thông báo thành công
+                            const alertHtml = `
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i>${result.message}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `;
+                            $('.container-fluid').prepend(alertHtml);
+                            
+                            // Chuyển hướng về trang lịch sử đơn hàng sau 2 giây
+                            setTimeout(function() {
+                                window.location.href = '@Url.Action("OrderHistory", "Cart")';
+                            }, 2000);
+                        } else {
+                            // Hiển thị thông báo lỗi
+                            alert(result.message || 'Không thể hủy đơn hàng. Vui lòng thử lại sau.');
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi hủy đơn hàng. Vui lòng thử lại sau.');
+                        $('#cancelOrderModal').modal('hide');
+                    }
+                });
+            });
+        });
+    </script>
+} 

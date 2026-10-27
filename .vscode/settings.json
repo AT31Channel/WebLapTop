@@ -1,0 +1,65 @@
+{
+    "files.exclude": {
+        "**/bin": true,
+        "**/obj": true,
+        "**/.vs": true
+    },
+    "search.exclude": {
+        "**/bin": true,
+        "**/obj": true,
+        "**/node_modules": true,
+        "**/wwwroot/lib": true
+    },
+    "css.validate": false,
+    "less.validate": false,
+    "scss.validate": false,
+    "stylelint.enable": false,
+    "stylelint.validate": [],
+    "eslint.enable": false,
+    "javascript.validate.enable": false,
+    "csharp.suppressBuildAssetsNotification": true,
+    "razor.trace": "off",
+    "razor.format.enable": false,
+    "omnisharp.enableRoslynAnalyzers": false,
+    "editor.formatOnSave": false,
+    "javascript.format.enable": false,
+    "editor.quickSuggestions": {
+        "strings": false
+    },
+    "[razor]": {
+        "editor.defaultFormatter": null
+    },
+    "[html]": {
+        "editor.defaultFormatter": null
+    },
+    "[css]": {
+        "editor.defaultFormatter": null
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": null
+    },
+    "[csharp]": {
+        "editor.defaultFormatter": null
+    },
+    "problems.decorations.enabled": false,
+    "problems.showCurrentInStatus": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.stylelint": "explicit"
+    },
+    "stylelint.snippet": [
+        "css",
+        "less",
+        "scss"
+    ],
+    "stylelint.config": {
+        "extends": "stylelint-config-standard",
+        "rules": {
+            "property-no-vendor-prefix": null,
+            "value-no-vendor-prefix": null,
+            "selector-no-vendor-prefix": null,
+            "at-rule-no-vendor-prefix": null,
+            "media-feature-name-no-vendor-prefix": null
+        }
+    },
+    "dotnet.formatting.organizeImportsOnFormat": false
+} 

@@ -1,0 +1,27 @@
+{
+  "extends": "stylelint-config-standard",
+  "ignoreFiles": [
+    "**/obj/**",
+    "**/bin/**",
+    "**/node_modules/**",
+    "**/wwwroot/lib/**",
+    "**/wwwroot/css/**",
+    "**/wwwroot/js/**",
+    "**/wwwroot/images/**",
+    "**/wwwroot/fonts/**",
+    "**/Views/**",
+    "**/Areas/**"
+  ],
+  "rules": {
+    "property-no-vendor-prefix": null,
+    "value-no-vendor-prefix": null,
+    "selector-no-vendor-prefix": null,
+    "at-rule-no-vendor-prefix": null,
+    "media-feature-name-no-vendor-prefix": null,
+    "property-no-unknown": null,
+    "selector-pseudo-class-no-unknown": null,
+    "selector-pseudo-element-no-unknown": null,
+    "value-no-unknown": null,
+    "at-rule-no-unknown": null
+  }
+} 

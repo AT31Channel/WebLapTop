@@ -1,0 +1,10 @@
+# Bỏ qua các thư viện
+**/lib/**
+**/dist/**
+**/*.min.css
+**/bootstrap*.css
+
+# Bỏ qua các file tự động sinh
+**/*.generated.css
+**/*.scss.css
+**/*.less.css 
